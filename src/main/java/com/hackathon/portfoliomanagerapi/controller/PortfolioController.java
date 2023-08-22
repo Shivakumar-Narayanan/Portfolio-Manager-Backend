@@ -1,6 +1,6 @@
 package com.hackathon.portfoliomanagerapi.controller;
 
-import com.hackathon.portfoliomanagerapi.model.Security;
+import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,13 +22,11 @@ public class PortfolioController {
     PortfolioService portfolioService;
 
     @GetMapping("/portfolioValueOverTime")
-    public ResponseEntity<Map<LocalDate, Map<Security, Integer>>> getPortfolioValueOverTime(
+    public ResponseEntity<Map<LocalDate, Map<Stock, Integer>>> getPortfolioValueOverTime(
             @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate,
-            @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate,
-            @RequestParam List<String> securityTypes) {
-
+            @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
         try {
-            return ResponseEntity.ok().body(portfolioService.getPortfolioCompositionOverTime(startDate, endDate, securityTypes));
+            return ResponseEntity.ok().body(portfolioService.getPortfolioCompositionOverTime(startDate, endDate));
         }
         catch(Exception e) {
             e.printStackTrace();

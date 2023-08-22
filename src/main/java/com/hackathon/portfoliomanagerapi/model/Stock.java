@@ -5,41 +5,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "Securities")
+@Table(name = "Stocks")
 @NoArgsConstructor
-public class Security {
-
-    public static final String STOCK = "ST";
-    public static final String MUTUAL_FUND = "MF";
-    public static final String BOND = "BD";
-    public static final String ETF = "ET";
-    public static final String CASH = "CS";
+public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long securityId;
-
-    private String securityType;
+    private Long stockId;
 
     @Column(unique=true, nullable=false)
     private String ticker;
 
     private String name;
 
-    private Security(Long securityId) {
-        this.securityId = securityId;
+    private Stock(Long stockId) {
+        this.stockId = stockId;
     }
 
     @Override
     public int hashCode() {
-        return securityId.hashCode();
+        return stockId.hashCode();
     }
 
     @Override

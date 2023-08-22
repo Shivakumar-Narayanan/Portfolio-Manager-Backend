@@ -14,7 +14,7 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping("/addTransaction")
-    public ResponseEntity<String> addSecurityToPortfolio(@RequestBody Transaction transaction) {
+    public ResponseEntity<String> addStockToPortfolio(@RequestBody Transaction transaction) {
         System.out.println("Trying to add new Transaction: " + transaction);
 
         try {

@@ -1,6 +1,6 @@
 package com.hackathon.portfoliomanagerapi.service;
 
-import com.hackathon.portfoliomanagerapi.model.Security;
+import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.model.Transaction;
 import com.hackathon.portfoliomanagerapi.model.User;
 import com.hackathon.portfoliomanagerapi.repository.TransactionRepository;
@@ -24,45 +24,45 @@ public class PortfolioService {
     @Autowired
     TransactionRepository transactionRepository;
 
-    public Map<LocalDate, Map<Security, Integer>> getPortfolioCompositionOverTime(LocalDate startDate, LocalDate endDate, List<String> securityTypes) {
+    public Map<LocalDate, Map<Stock, Integer>> getPortfolioCompositionOverTime(LocalDate startDate, LocalDate endDate) {
 
         List<LocalDate> samplingDates = timeStampGenerator.generateTimeStamps(startDate, endDate);
 
-        List<Transaction> buyTransactions = transactionRepository.findByUser(0L, endDate, securityTypes, Transaction.BUY);
-        List<Transaction> sellTransactions = transactionRepository.findByUser(0L, endDate, securityTypes, Transaction.SELL);
+        List<Transaction> buyTransactions = transactionRepository.findByUser(0L, endDate, Transaction.BUY);
+        List<Transaction> sellTransactions = transactionRepository.findByUser(0L, endDate, Transaction.SELL);
 
-        Map<LocalDate, Map<Security, Integer>> res = new HashMap<>();
+        Map<LocalDate, Map<Stock, Integer>> res = new HashMap<>();
 
         for(LocalDate samplingDate : samplingDates) {
             // optimize this later
-            Map<Security, List<Transaction>> buyTransactionsOnOrBeforeSamplingDate = buyTransactions.stream().
+            Map<Stock, List<Transaction>> buyTransactionsOnOrBeforeSamplingDate = buyTransactions.stream().
                     filter(
                             transaction -> transaction.getTransactionDate().isBefore(samplingDate.plusDays(1))
-                    ).collect(Collectors.groupingBy(Transaction::getSecurity));
+                    ).collect(Collectors.groupingBy(Transaction::getStock));
 
-            Map<Security, List<Transaction>> sellTransactionsOnOrBeforeSamplingDate = sellTransactions.stream().
+            Map<Stock, List<Transaction>> sellTransactionsOnOrBeforeSamplingDate = sellTransactions.stream().
                     filter(
                             transaction -> transaction.getTransactionDate().isBefore(samplingDate.plusDays(1))
-                    ).collect(Collectors.groupingBy(Transaction::getSecurity));
+                    ).collect(Collectors.groupingBy(Transaction::getStock));
 
-            Map<Security, Integer> portfolioComposition = new HashMap<>();
+            Map<Stock, Integer> portfolioComposition = new HashMap<>();
 
             buyTransactionsOnOrBeforeSamplingDate.keySet().forEach(
-                    security -> {
-                        int buyTransactionsForSecurity = buyTransactionsOnOrBeforeSamplingDate.
-                                getOrDefault(security, new ArrayList<>()).stream().
-                                map(Transaction::getSecurityCount).
+                    Stock -> {
+                        int buyTransactionsForStock = buyTransactionsOnOrBeforeSamplingDate.
+                                getOrDefault(Stock, new ArrayList<>()).stream().
+                                map(Transaction::getStockCount).
                                 reduce(0, Integer::sum);
 
-                        int sellTransactionsForSecurity = sellTransactionsOnOrBeforeSamplingDate.
-                                getOrDefault(security, new ArrayList<>()).stream().
-                                map(Transaction::getSecurityCount).
+                        int sellTransactionsForStock = sellTransactionsOnOrBeforeSamplingDate.
+                                getOrDefault(Stock, new ArrayList<>()).stream().
+                                map(Transaction::getStockCount).
                                 reduce(0, Integer::sum);
 
-                        int netQuantity = buyTransactionsForSecurity - sellTransactionsForSecurity;
+                        int netQuantity = buyTransactionsForStock - sellTransactionsForStock;
 
                         if(netQuantity > 0) {
-                            portfolioComposition.put(security, buyTransactionsForSecurity - sellTransactionsForSecurity);
+                            portfolioComposition.put(Stock, buyTransactionsForStock - sellTransactionsForStock);
                         }
                     }
             );

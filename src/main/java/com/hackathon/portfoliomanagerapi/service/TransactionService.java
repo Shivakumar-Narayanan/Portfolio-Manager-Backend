@@ -1,8 +1,8 @@
 package com.hackathon.portfoliomanagerapi.service;
 
-import com.hackathon.portfoliomanagerapi.model.Security;
+import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.model.Transaction;
-import com.hackathon.portfoliomanagerapi.repository.SecurityRepository;
+import com.hackathon.portfoliomanagerapi.repository.StockRepository;
 import com.hackathon.portfoliomanagerapi.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ public class TransactionService {
     TransactionRepository transactionRepository;
 
     @Autowired
-    SecurityRepository securityRepository;
+    StockRepository stockRepository;
 
     public void addTransaction(Transaction transaction) {
-        Security security = transaction.getSecurity();
-        if(security.getSecurityId() == null) {
-            transaction.setSecurity(securityRepository.findByTicker(security.getTicker()));
+        Stock stock = transaction.getStock();
+        if(stock.getStockId() == null) {
+            transaction.setStock(stockRepository.findByTicker(stock.getTicker()));
         }
 
         transactionRepository.save(transaction);

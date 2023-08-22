@@ -14,11 +14,10 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
 
     @Query(
             value = "SELECT * FROM Transactions T " +
-                    "NATURAL JOIN Securities S " +
+                    "NATURAL JOIN Stocks S " +
                     "WHERE T.user_id=?1 " +
                     "AND T.transaction_date <= ?2 " +
-                    "AND T.transaction_type=?4 " +
-                    "AND S.security_type IN ?3 " +
+                    "AND T.transaction_type=?3 " +
                     "ORDER BY T.transaction_date", nativeQuery = true)
-    public List<Transaction> findByUser(Long userId, LocalDate tillDate, List<String> securityTypes, String transactionType);
+    public List<Transaction> findByUser(Long userId, LocalDate tillDate, String transactionType);
 }
