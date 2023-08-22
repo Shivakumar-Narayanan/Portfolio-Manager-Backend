@@ -1,5 +1,5 @@
 package com.hackathon.portfoliomanagerapi.exceptions;
 
-public class SecurityExistsException extends Exception {
+public class StockExistsException extends Exception {
 
 }

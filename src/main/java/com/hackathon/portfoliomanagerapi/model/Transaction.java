@@ -26,12 +26,12 @@ public class Transaction implements Comparable<Transaction> {
     private LocalDate transactionDate;
 
     @ManyToOne()
-    @JoinColumn(name = "securityId")
-    private Security security;
+    @JoinColumn(name = "stockId")
+    private Stock stock;
 
-    private int securityCount;
+    private int stockCount;
 
-    private double securityPrice;
+    private double stockPrice;
 
     @ManyToOne()
     @JoinColumn(name = "userId")
