@@ -1,6 +1,6 @@
 package com.hackathon.portfoliomanagerapi.service;
 
-import com.hackathon.portfoliomanagerapi.exceptions.StockExistsException;
+import com.hackathon.portfoliomanagerapi.exceptions.stock.StockExistsException;
 import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
