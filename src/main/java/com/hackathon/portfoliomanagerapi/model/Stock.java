@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Setter
 @Table(name = "Stocks")
 @NoArgsConstructor
-public class Stock {
+public class Stock implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,12 +29,6 @@ public class Stock {
 
     private String name;
 
-    @Transient
-    private double price;
-
-    @Transient
-    private int quantity;
-
     private Stock(Long stockId) {
         this.stockId = stockId;
     }
@@ -41,6 +36,12 @@ public class Stock {
     @Override
     public int hashCode() {
         return stockId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Stock other = (Stock) o;
+        return ((Stock) o).stockId.equals(other.stockId);
     }
 
     @Override

@@ -57,7 +57,7 @@ public class TransactionService {
 
         Stock stock = transaction.getStock();
 
-        if(stock.getStockId() == null && stock.getTicker() == null) {
+        if(stock == null || stock.getStockId() == null && stock.getTicker() == null) {
             throw new InvalidStockException();
         }
 
@@ -66,9 +66,17 @@ public class TransactionService {
             transaction.setStock(stock);
         }
 
+        if(stock == null) {
+            throw new InvalidStockException();
+        }
+
         if(stock.getTicker() == null) {
             stock = stockRepository.findByTicker(stock.getTicker());
             transaction.setStock(stock);
+        }
+
+        if(stock == null) {
+            throw new InvalidStockException();
         }
 
         if(transaction.getStock() == null) {

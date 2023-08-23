@@ -2,6 +2,7 @@ package com.hackathon.portfoliomanagerapi.service;
 
 import com.hackathon.portfoliomanagerapi.exceptions.stock.StockExistsException;
 import com.hackathon.portfoliomanagerapi.model.Stock;
+import com.hackathon.portfoliomanagerapi.model.StockSnapshot;
 import com.hackathon.portfoliomanagerapi.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,27 +32,23 @@ public class StockService {
         stockRepository.save(Stock);
     }
 
-    public List<Stock> getAllStocks() {
+    public List<StockSnapshot> getAllStocks() {
         List<Stock> stocks = stockRepository.findAll();
-        augmentStocksWithPrice(stocks);
 
-        return stocks;
+        return augmentStocksWithPrice(stocks);
     }
 
-    public List<Stock> typeAhead(String query) {
+    public List<StockSnapshot> typeAhead(String query) {
         List<Stock> stocks = stockRepository.findAll();
         stocks.sort(new Stock.StringDistanceComparator(query));
 
         stocks = stocks.stream().limit(maxTypeAheadResults).collect(Collectors.toList());
-        augmentStocksWithPrice(stocks);
-
-        return stocks;
-
+        return augmentStocksWithPrice(stocks);
     }
 
-    private void augmentStocksWithPrice(List<Stock> stocks) {
-        stocks.forEach(
-                stock -> stock.setPrice(marketService.getQuote(stock))
-        );
+    private List<StockSnapshot> augmentStocksWithPrice(List<Stock> stocks) {
+        return stocks.stream().
+                map(stock -> new StockSnapshot(stock, marketService.getQuote(stock))).
+                collect(Collectors.toList());
     }
 }

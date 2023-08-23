@@ -2,6 +2,7 @@ package com.hackathon.portfoliomanagerapi.controller;
 
 import com.hackathon.portfoliomanagerapi.model.PortfolioSnapshot;
 import com.hackathon.portfoliomanagerapi.model.Stock;
+import com.hackathon.portfoliomanagerapi.model.StockSnapshot;
 import com.hackathon.portfoliomanagerapi.service.PortfolioService;
 import com.hackathon.portfoliomanagerapi.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class PortfolioController {
             return ResponseEntity.ok(portfolioService.getPortfolioAsOn(currentDate));
         }
         catch(Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(null);
         }
     }
@@ -50,6 +52,28 @@ public class PortfolioController {
             @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
         try {
             return ResponseEntity.ok().body(portfolioService.getPortfolioValueOverTime(startDate, endDate));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
+    @GetMapping("/topGainers")
+    public ResponseEntity<List<StockSnapshot>> getTopGainers() {
+        try {
+            return ResponseEntity.ok(portfolioService.getTopGainers());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
+    @GetMapping("/topLosers")
+    public ResponseEntity<List<StockSnapshot>> getTopLosers() {
+        try {
+            return ResponseEntity.ok(portfolioService.getTopLosers());
         }
         catch(Exception e) {
             e.printStackTrace();
