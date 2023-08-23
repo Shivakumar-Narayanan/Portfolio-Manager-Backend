@@ -1,6 +1,7 @@
 package com.hackathon.portfoliomanagerapi.service;
 
-import com.hackathon.portfoliomanagerapi.exceptions.*;
+import com.hackathon.portfoliomanagerapi.exceptions.stock.InvalidStockException;
+import com.hackathon.portfoliomanagerapi.exceptions.transaction.*;
 import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.model.Transaction;
 import com.hackathon.portfoliomanagerapi.model.User;

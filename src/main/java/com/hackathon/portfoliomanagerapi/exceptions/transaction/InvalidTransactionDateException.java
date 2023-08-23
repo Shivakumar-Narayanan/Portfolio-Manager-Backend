@@ -1,4 +1,4 @@
-package com.hackathon.portfoliomanagerapi.exceptions;
+package com.hackathon.portfoliomanagerapi.exceptions.transaction;
 
 public class InvalidTransactionDateException extends Exception {
 }

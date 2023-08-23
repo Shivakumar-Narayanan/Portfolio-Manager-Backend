@@ -1,7 +1,9 @@
 package com.hackathon.portfoliomanagerapi.controller;
 
+import com.hackathon.portfoliomanagerapi.model.PortfolioSnapshot;
 import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.service.PortfolioService;
+import com.hackathon.portfoliomanagerapi.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +23,33 @@ public class PortfolioController {
     @Autowired
     PortfolioService portfolioService;
 
+    @GetMapping("/currentPortfolio")
+    public ResponseEntity<PortfolioSnapshot> getCurrentPortfolioComposition() {
+        try {
+            LocalDate currentDate = LocalDate.now();
+            return ResponseEntity.ok(portfolioService.getPortfolioAsOn(currentDate));
+        }
+        catch(Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
+    @GetMapping("/portfolioAsOn")
+    public ResponseEntity<PortfolioSnapshot> getPortfolioCompositionAsOn(@DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date) {
+        try {
+            return ResponseEntity.ok(portfolioService.getPortfolioAsOn(date));
+        }
+        catch(Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
+
     @GetMapping("/portfolioValueOverTime")
-    public ResponseEntity<Map<LocalDate, Map<Stock, Integer>>> getPortfolioValueOverTime(
+    public ResponseEntity<List<Pair<LocalDate, Double>>> getPortfolioValueOverTime(
             @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate,
             @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
         try {
-            return ResponseEntity.ok().body(portfolioService.getPortfolioCompositionOverTime(startDate, endDate));
+            return ResponseEntity.ok().body(portfolioService.getPortfolioValueOverTime(startDate, endDate));
         }
         catch(Exception e) {
             e.printStackTrace();
