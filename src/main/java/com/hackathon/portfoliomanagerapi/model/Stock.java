@@ -28,6 +28,9 @@ public class Stock {
 
     private String name;
 
+    @Transient
+    private double price;
+
     private Stock(Long stockId) {
         this.stockId = stockId;
     }
