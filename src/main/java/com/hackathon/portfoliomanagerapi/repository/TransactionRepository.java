@@ -42,8 +42,8 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
                     "left join " +
                     "(select stock_id, sum(stock_price * stock_count) as amount, sum(stock_count) as stock_count  " +
                     "from transactions  " +
-                    "where transaction_type='SELL' and transaction_date <= ?2 and user_id = ?1" +
-                    "group by stock_id" +
+                    "where transaction_type='SELL' and transaction_date <= ?2 and user_id = ?1 " +
+                    "group by stock_id " +
                     ") ST " +
                     "on BT.stock_id = ST.stock_id", nativeQuery=true)
     public Double getTotalInvestedAsOn(Long userId, LocalDate date);

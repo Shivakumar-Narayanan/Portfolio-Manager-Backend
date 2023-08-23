@@ -80,4 +80,50 @@ public class PortfolioController {
             return ResponseEntity.internalServerError().body(null);
         }
     }
+
+    @GetMapping("/currentInvested")
+    public ResponseEntity<Double> getCurrentInvested() {
+        try {
+            LocalDate currentDate = LocalDate.now();
+            return ResponseEntity.ok(portfolioService.getTotalInvestedAsOn(currentDate));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(0.0);
+        }
+    }
+
+    @GetMapping("/currentTotalAmount")
+    public ResponseEntity<Double> getCurrentTotalAmount() {
+        try {
+            LocalDate currentDate = LocalDate.now();
+            return ResponseEntity.ok(portfolioService.getPortfolioValueAsOn(currentDate));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(0.0);
+        }
+    }
+
+    @GetMapping("/profitLoss")
+    public ResponseEntity<Double> getProfitLoss() {
+        try {
+            return ResponseEntity.ok(portfolioService.getCurrentProfitOrLoss());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(0.0);
+        }
+    }
+
+    @GetMapping("/profitLossPercentage")
+    public ResponseEntity<Double> getProfitLossPercentage() {
+        try {
+            return ResponseEntity.ok(portfolioService.getCurrentProfitOrLossPercentage());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(0.0);
+        }
+    }
 }
