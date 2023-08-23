@@ -18,6 +18,16 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
                     "WHERE T.user_id=?1 " +
                     "AND T.transaction_date <= ?2 " +
                     "AND T.transaction_type=?3 " +
-                    "ORDER BY T.transaction_date", nativeQuery = true)
+                    "ORDER BY T.transaction_date", nativeQuery=true)
     public List<Transaction> findByUser(Long userId, LocalDate tillDate, String transactionType);
+
+    @Query(
+        value = "SELECT SUM(stock_count) FROM Transactions T " +
+                "NATURAL JOIN Stocks S " +
+                "WHERE T.user_id=?1 " +
+                "AND T.transaction_date <= ?2 " +
+                "AND T.transaction_type=?3 " +
+                "AND S.ticker=?4", nativeQuery=true
+    )
+    public Integer getTransactionsOnOrBeforeDate(Long userId, LocalDate tillDate, String transactionType, String ticker);
 }
