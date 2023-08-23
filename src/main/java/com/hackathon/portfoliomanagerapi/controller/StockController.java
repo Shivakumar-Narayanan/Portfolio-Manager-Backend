@@ -2,6 +2,7 @@ package com.hackathon.portfoliomanagerapi.controller;
 
 import com.hackathon.portfoliomanagerapi.exceptions.stock.StockExistsException;
 import com.hackathon.portfoliomanagerapi.model.Stock;
+import com.hackathon.portfoliomanagerapi.model.StockSnapshot;
 import com.hackathon.portfoliomanagerapi.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class StockController {
     }
 
     @GetMapping("/getAllStocks")
-    public ResponseEntity<List<Stock>> getAllStocks() {
+    public ResponseEntity<List<StockSnapshot>> getAllStocks() {
         try {
-            List<Stock> stocks = stockService.getAllStocks();
+            List<StockSnapshot> stocks = stockService.getAllStocks();
             return ResponseEntity.ok(stocks);
         }
         catch(Exception e) {
@@ -45,9 +46,9 @@ public class StockController {
     }
 
     @GetMapping("/typeAhead")
-    public ResponseEntity<List<Stock>> typeAhead(@RequestParam String q) {
+    public ResponseEntity<List<StockSnapshot>> typeAhead(@RequestParam String q) {
         try {
-            List<Stock> stocks = stockService.typeAhead(q.toLowerCase());
+            List<StockSnapshot> stocks = stockService.typeAhead(q.toLowerCase());
             return ResponseEntity.ok(stocks);
         }
         catch(Exception e) {
