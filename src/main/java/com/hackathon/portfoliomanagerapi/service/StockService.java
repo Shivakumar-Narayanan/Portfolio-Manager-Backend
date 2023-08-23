@@ -16,6 +16,9 @@ public class StockService {
     @Autowired
     StockRepository stockRepository;
 
+    @Autowired
+    MarketService marketService;
+
     @Value("${maxtypeaheadresults}")
     private int maxTypeAheadResults;
 
@@ -29,13 +32,26 @@ public class StockService {
     }
 
     public List<Stock> getAllStocks() {
-        return stockRepository.findAll();
+        List<Stock> stocks = stockRepository.findAll();
+        augmentStocksWithPrice(stocks);
+
+        return stocks;
     }
 
     public List<Stock> typeAhead(String query) {
         List<Stock> stocks = stockRepository.findAll();
         stocks.sort(new Stock.StringDistanceComparator(query));
 
-        return stocks.stream().limit(maxTypeAheadResults).collect(Collectors.toList());
+        stocks = stocks.stream().limit(maxTypeAheadResults).collect(Collectors.toList());
+        augmentStocksWithPrice(stocks);
+
+        return stocks;
+
+    }
+
+    private void augmentStocksWithPrice(List<Stock> stocks) {
+        stocks.forEach(
+                stock -> stock.setPrice(marketService.getQuote(stock))
+        );
     }
 }
