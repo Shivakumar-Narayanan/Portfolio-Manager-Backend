@@ -40,11 +40,12 @@ public class PortfolioService {
 
         List<StockSnapshot> stockSnapshots = stockSnapshotRepository.getPortfolioCompositionAsOn(0L, date);
 
-        System.out.println(date);
-        System.out.println(stockSnapshots);
-
         stockSnapshots.forEach(
-                res::addStockSnapshot
+                stockSnapshot -> {
+                    stockSnapshot.setCurrentPricePerShare(marketService.getQuote(stockSnapshot.getStock(), date));
+                    res.addStockSnapshot(stockSnapshot);
+                }
+
         );
 
         return res;
@@ -127,5 +128,11 @@ public class PortfolioService {
         stockSnapshots.sort(comparator);
 
         return stockSnapshots.stream().limit(numTopMovers).collect(Collectors.toList());
+    }
+
+    private List<StockSnapshot> augmentStocksWithPrice(List<Stock> stocks, LocalDate date) {
+        return stocks.stream().
+                map(stock -> new StockSnapshot(stock, marketService.getQuote(stock, date))).
+                collect(Collectors.toList());
     }
 }
