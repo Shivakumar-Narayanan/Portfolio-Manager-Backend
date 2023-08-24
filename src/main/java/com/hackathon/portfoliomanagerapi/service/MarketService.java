@@ -1,9 +1,7 @@
 package com.hackathon.portfoliomanagerapi.service;
 
 import com.hackathon.portfoliomanagerapi.model.Stock;
-import com.hackathon.portfoliomanagerapi.util.DoubleUtil;
-import com.hackathon.portfoliomanagerapi.util.Pair;
-import com.hackathon.portfoliomanagerapi.util.TimeStampGenerator;
+import com.hackathon.portfoliomanagerapi.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,23 +32,47 @@ public class MarketService {
 
     public double getQuote(Stock stock, LocalDate date) {
         // somehow fetch reasonable looking data
-        return getQuote(stock);
+        try {
+            return YahooFinanceAPI.getStockQuote(stock.getTicker(), date);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return getQuote(stock);
+        }
     }
 
-    public List<Pair<LocalDate, Double>> getStockValueOverTime(String ticker, LocalDate startDate, LocalDate endDate) {
-        List<LocalDate> samplingDates = timeStampGenerator.generateTimeStamps(startDate, endDate);
+    public List<Pair<LocalDate, Double>> getStockValueOverTime(String ticker, LocalDate startDate, LocalDate endDate) throws Exception {
+//        List<LocalDate> samplingDates = timeStampGenerator.generateTimeStamps(startDate, endDate);
+//
+//        List<Pair<LocalDate, Double>> res = new ArrayList<>();
+//
+//        Stock stock = new Stock(ticker);
+//
+//        for(LocalDate samplingDate : samplingDates) {
+//            System.out.println(samplingDate);
+//            double quote = getQuote(stock, samplingDate);
+//            res.add(
+//                   new Pair<>(samplingDate, quote)
+//            );
+//        }
+//
+//        return res;
 
-        List<Pair<LocalDate, Double>> res = new ArrayList<>();
+        List<Pair<LocalDate, Double>> quotes = YahooFinanceAPI.getBulkStockQuotes(ticker);
 
-        Stock stock = new Stock(ticker);
+        return selectUniformItems(quotes, 10);
+    }
 
-        for(LocalDate samplingDate : samplingDates) {
-            double quote = getQuote(stock, samplingDate);
-            res.add(
-                   new Pair<>(samplingDate, quote)
-            );
+    public static List<Pair<LocalDate, Double>> selectUniformItems(List<Pair<LocalDate, Double>> items, int itemCount) {
+        List<Pair<LocalDate, Double>> selectedItems = new ArrayList<>();
+        int totalItems = items.size();
+        double segmentSize = (double) totalItems / itemCount;
+
+        for (int i = 0; i < itemCount; i++) {
+            int index = (int) Math.floor(i * segmentSize);
+            selectedItems.add(items.get(index));
         }
 
-        return res;
+        return selectedItems;
     }
 }

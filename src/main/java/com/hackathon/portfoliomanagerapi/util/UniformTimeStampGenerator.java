@@ -14,19 +14,21 @@ public class UniformTimeStampGenerator implements TimeStampGenerator {
     @Value("${numtimestamps}")
     private int numTimeStamps;
 
-    private LocalDate getMiddleDate(LocalDate startDate, LocalDate endDate) {
-        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
-        return startDate.plusDays(daysBetween / 2);
-    }
-
     @Override
     public List<LocalDate> generateTimeStamps(LocalDate startDate, LocalDate endDate) {
-        List<LocalDate> res = new ArrayList<>();
+        return generateEvenlyDistributedDates(startDate, endDate, numTimeStamps);
+    }
 
-        res.add(startDate);
-        res.add(getMiddleDate(startDate, endDate));
-        res.add(endDate);
+    public static List<LocalDate> generateEvenlyDistributedDates(LocalDate startDate, LocalDate endDate, int count) {
+        List<LocalDate> dates = new ArrayList<>();
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+        long interval = daysBetween / (count - 1);
 
-        return res;
+        for (long i = 0; i < count; i++) {
+            LocalDate newDate = startDate.plusDays(interval * i);
+            dates.add(newDate);
+        }
+
+        return dates;
     }
 }

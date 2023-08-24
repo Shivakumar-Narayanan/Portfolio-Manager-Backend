@@ -26,6 +26,7 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.mysql:mysql-connector-j")
+    implementation("org.json:json:20230227")
 }
 
 tasks.getByName<Test>("test") {
