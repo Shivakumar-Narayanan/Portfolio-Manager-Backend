@@ -90,12 +90,12 @@ public class PortfolioService {
     }
 
     public Double getTotalInvestedAsOn(LocalDate date) {
-        return transactionRepository.getTotalInvestedAsOn(0L, date);
+        return doubleUtil.trimTo2DecimalPlaces(transactionRepository.getTotalInvestedAsOn(0L, date));
     }
 
     public Double getCurrentProfitOrLoss() {
         LocalDate currentDate = LocalDate.now();
-        return getPortfolioValueAsOn(currentDate) - getTotalInvestedAsOn(currentDate);
+        return doubleUtil.trimTo2DecimalPlaces(getPortfolioValueAsOn(currentDate) - getTotalInvestedAsOn(currentDate));
     }
 
     public Double getCurrentProfitOrLossPercentage() {
@@ -104,7 +104,7 @@ public class PortfolioService {
         if(totalInvestedTillNow == 0) {
             return 0.0;
         }
-        return (getCurrentProfitOrLoss() * 100) / totalInvestedTillNow;
+        return doubleUtil.trimTo2DecimalPlaces((getCurrentProfitOrLoss() * 100) / totalInvestedTillNow);
     }
 
     public List<StockSnapshot> getTopGainers() {
@@ -134,5 +134,9 @@ public class PortfolioService {
         return stocks.stream().
                 map(stock -> new StockSnapshot(stock, marketService.getQuote(stock, date))).
                 collect(Collectors.toList());
+    }
+
+    public String wrapDoubleInJson(Double d) {
+        return "{ \"value\": " + d + "}";
     }
 }

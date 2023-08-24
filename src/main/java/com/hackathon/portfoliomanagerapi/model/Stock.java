@@ -33,6 +33,10 @@ public class Stock implements Serializable {
         this.stockId = stockId;
     }
 
+    public Stock(String ticker) {
+        this.ticker = ticker;
+    }
+
     @Override
     public int hashCode() {
         return stockId.hashCode();
