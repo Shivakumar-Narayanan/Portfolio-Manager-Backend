@@ -87,6 +87,10 @@ public class TransactionService {
             throw new InvalidTransactionTypeException();
         }
 
+        if(transaction.getStockPrice() <= 0) {
+            throw new InvalidTransactionException();
+        }
+
         if(transaction.getTransactionType().equals(SELL)) {
 
             System.out.println(stock);
@@ -102,6 +106,10 @@ public class TransactionService {
             }
 
             int remaining = totalBuy - totalSell;
+
+            System.out.println(totalBuy);
+            System.out.println(remaining);
+            System.out.println(transaction.getStockCount());
 
             if(transaction.getStockCount() > remaining) {
                 throw new InvalidTransactionException();

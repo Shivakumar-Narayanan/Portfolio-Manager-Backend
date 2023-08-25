@@ -24,27 +24,27 @@ public class TransactionController {
 
         try {
             transactionService.addTransaction(transaction);
-            return ResponseEntity.ok("transaction created");
+            return ResponseEntity.ok(wrapInJson("transaction created"));
         }
         catch(InvalidStockException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("invalid stock, please provide either valid stock id or valid ticker");
+            return ResponseEntity.badRequest().body(wrapInJson("invalid stock, please provide either valid stock id or valid ticker"));
         }
         catch(InvalidTransactionDateException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid Transaction date, please enter a date after ipo and before tomorrow");
+            return ResponseEntity.badRequest().body(wrapInJson("Invalid Transaction date, please enter a date after ipo and before tomorrow"));
         }
         catch(InvalidTransactionException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid Transaction, you don't have enough of this stock to sell");
+            return ResponseEntity.badRequest().body(wrapInJson("Invalid Transaction, you don't have enough of this stock to sell"));
         }
         catch(InvalidTransactionTypeException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid Transaction Type, transaction type should be BUY or SELL");
+            return ResponseEntity.badRequest().body(wrapInJson("Invalid Transaction Type, transaction type should be BUY or SELL"));
         }
         catch(Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Could not add transaction");
+            return ResponseEntity.internalServerError().body(wrapInJson("Sorry, Could not add transaction"));
         }
     }
 
@@ -64,20 +64,24 @@ public class TransactionController {
     public ResponseEntity<String> deleteTransaction(@RequestBody Transaction transaction) {
         try {
             transactionService.deleteTransaction(transaction);
-            return ResponseEntity.ok("Transaction Deleted");
+            return ResponseEntity.ok("{\"message\": \"Transaction Deleted\"}");
         }
         catch(InvalidTransactionDeleteException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid Transaction Delete. This delete would leave your portfolio in an invalid state");
+            return ResponseEntity.badRequest().body(wrapInJson("Invalid Transaction Delete. This delete would leave your portfolio in an invalid state"));
         }
         catch(TransactionDoesntExistException e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid Transaction, Please provide a valid TransactionId");
+            return ResponseEntity.badRequest().body(wrapInJson("Invalid Transaction, Please provide a valid TransactionId"));
         }
         catch(Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Could not delete transaction");
+            return ResponseEntity.internalServerError().body(wrapInJson("Could not delete transaction"));
         }
+    }
+
+    private String wrapInJson(String message) {
+        return "{\"message\": \"" + message + "\"}";
     }
 
 }

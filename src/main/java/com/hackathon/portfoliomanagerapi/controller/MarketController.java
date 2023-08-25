@@ -1,5 +1,6 @@
 package com.hackathon.portfoliomanagerapi.controller;
 
+import com.hackathon.portfoliomanagerapi.model.Stock;
 import com.hackathon.portfoliomanagerapi.service.MarketService;
 import com.hackathon.portfoliomanagerapi.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,10 @@ public class MarketController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(null);
         }
+    }
+
+    @GetMapping("stockQuote")
+    public ResponseEntity<Double> getStockQuote(@RequestParam String ticker) {
+        return ResponseEntity.ok(marketService.getQuote(new Stock(ticker)));
     }
 }

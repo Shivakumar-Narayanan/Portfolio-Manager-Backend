@@ -15,7 +15,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
 
     @Query(
             value = "SELECT * FROM Transactions T " +
-                    "NATURAL JOIN Stocks S " +
+                    "INNER JOIN Stocks S on T.stock_id=S.stock_id " +
                     "WHERE T.user_id=?1 " +
                     "AND T.transaction_date <= ?2 " +
                     "AND T.transaction_type=?3 " +
@@ -24,7 +24,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
 
     @Query(
             value = "SELECT SUM(stock_count) FROM Transactions T " +
-                    "NATURAL JOIN Stocks S " +
+                    "INNER JOIN Stocks S on T.stock_id=S.stock_id " +
                     "WHERE T.user_id=?1 " +
                     "AND T.transaction_date <= ?2 " +
                     "AND T.transaction_type=?3 " +

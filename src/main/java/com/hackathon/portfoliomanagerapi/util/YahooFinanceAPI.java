@@ -57,7 +57,7 @@ public class YahooFinanceAPI {
         }
 
         Random r = new Random();
-        int swing = 40;
+        int swing = 10;
         if(r.nextDouble() < 0.5) {
             return priceAtClosestDate - swing * new Random().nextDouble();
         }

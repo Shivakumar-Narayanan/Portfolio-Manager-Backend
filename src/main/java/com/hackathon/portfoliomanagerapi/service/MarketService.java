@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public class MarketService {
     @Autowired
     TimeStampGenerator timeStampGenerator;
 
-    public double getQuote(Stock stock) {
+    public double getQuoteRandom(Stock stock) {
         Random r = new Random();
         DecimalFormat df = new DecimalFormat("#.##");
         double rangeMin = 50.0;
@@ -30,10 +31,20 @@ public class MarketService {
         return doubleUtil.trimTo2DecimalPlaces(res);
     }
 
+    public double getQuote(Stock stock) {
+        try {
+            return doubleUtil.trimTo2DecimalPlaces(getQuote(stock, LocalDate.now()));
+        }
+        catch(Exception e) {
+            System.out.println("could not fetch data");
+            return getQuoteRandom(stock);
+        }
+    }
+
     public double getQuote(Stock stock, LocalDate date) {
         // somehow fetch reasonable looking data
         try {
-            return YahooFinanceAPI.getStockQuote(stock.getTicker(), date);
+            return doubleUtil.trimTo2DecimalPlaces(YahooFinanceAPI.getStockQuote(stock.getTicker(), date));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -64,6 +75,7 @@ public class MarketService {
     }
 
     public static List<Pair<LocalDate, Double>> selectUniformItems(List<Pair<LocalDate, Double>> items, int itemCount) {
+        Collections.reverse(items);
         List<Pair<LocalDate, Double>> selectedItems = new ArrayList<>();
         int totalItems = items.size();
         double segmentSize = (double) totalItems / itemCount;
@@ -72,7 +84,8 @@ public class MarketService {
             int index = (int) Math.floor(i * segmentSize);
             selectedItems.add(items.get(index));
         }
-
+        Collections.reverse(items);
+        Collections.reverse(selectedItems);
         return selectedItems;
     }
 }
